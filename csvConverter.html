@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .chartBox {
+            width: 93%;
+            height: 90%;
+            margin: auto;
+        }
+
+    </style>
+</head>
+<body>
+<div class="chartBox">
+    <canvas id="myChart"></canvas>
+</div>
+<input class = "button" type="file" id="uploadfile" accept=".csv">
+<button class = "button" id="uploadConfirm">Upload File</button>
+<button class = "button" onclick="updateChart()">Update</button>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const time = [];
+    const RG1and2 = [];
+    const RG3 = [];
+    const RG4 = [];
+    const temperatureRG1 = [];
+    const temperatureRG2 = [];
+    const temperatureRG3 = [];
+    const temperatureRG4 = [];
+    const temperatureFlueGas = [];
+
+    document.getElementById("uploadConfirm").
+    addEventListener('click', () => {
+        Papa.parse(document.getElementById('uploadfile').files[0],
+            {
+                delimiter: ";",
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    for (let i=0; i < Object.keys(results.data).length; i++) {
+                        time.push(Object.values(results.data[i])[1]);
+                        RG1and2.push(Object.values(results.data[i])[2].split(",").join("."));
+                        RG3.push(Object.values(results.data[i])[3].split(",").join("."))
+                        RG4.push(Object.values(results.data[i])[4].split(",").join("."))
+                        temperatureRG1.push(Object.values(results.data[i])[6].split(",").join("."))
+                        temperatureRG2.push(Object.values(results.data[i])[7].split(",").join("."))
+                        temperatureRG3.push(Object.values(results.data[i])[8].split(",").join("."))
+                        temperatureRG4.push(Object.values(results.data[i])[9].split(",").join("."))
+                        temperatureFlueGas.push(Object.values(results.data[i])[10].split(",").join("."))
+                    }
+                },
+            });
+    });
+
+    // Setup block
+    const data = {
+        labels: time,
+        datasets: [
+            {
+                label: 'RG1/RG2 set temperature',
+                data: RG1and2,
+                order: 1,
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                pointRadius: [0]
+            },
+            {
+                label: 'RG3 set temperature',
+                data: RG3,
+                order: 1,
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                pointRadius: [0]
+            },
+            {
+                label: 'RG4 set temperature',
+                data: RG4,
+                order: 1,
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                pointRadius: [0]
+            },
+            {
+                label: 'temperatureRG1',
+                data: temperatureRG1,
+                borderColor: [
+                    'rgba(54,105,235,0.2)',
+                ],
+                pointRadius: [0]
+            },
+            {
+                label: 'temperatureRG2',
+                data: temperatureRG2,
+                borderColor: [
+                    'rgba(54,105,235,0.2)',
+                ],
+                pointRadius: [0]
+            },
+            {
+                label: 'temperatureRG3',
+                data: temperatureRG3,
+                borderColor: [
+                    'rgba(54,105,235,0.2)',
+                ],
+                pointRadius: [0]
+            },
+            {
+                label: 'temperatureRG4',
+                data: temperatureRG4,
+                borderColor: [
+                    'rgba(54,105,235,0.2)',
+                ],
+                pointRadius: [0]
+            },
+            {
+                label: 'Temperature flue gases',
+                data: temperatureFlueGas,
+                backgroundColor: [
+                    'rgba(54,235,93,0.2)'
+                ],
+                borderColor: [
+                    'rgba(54,235,93,0.2)',
+                ],
+                pointRadius: [0]
+            }
+        ]
+    };
+    // Config block
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }};
+
+    // Init block
+    const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+
+    function updateChart(){
+        myChart.update();
+    }
+</script>
+</body>
+</html>
